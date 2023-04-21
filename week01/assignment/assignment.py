@@ -27,6 +27,7 @@ Instructions:
 import math
 import threading 
 import os
+import time
 from cse251turtle import *
 
 # Include CSE 251 common Python files. 
@@ -94,32 +95,45 @@ def draw_coord_system(tur, x, y, size=300, color='black'):
         tur.backward(size)
         tur.left(90)
 
-def draw_squares(tur):
+def draw_squares(tur, lock):
     """Draw a group of squares"""
     for x in range(-300, 350, 200):
         for y in range(-300, 350, 200):
+            lock.acquire()
             draw_square(tur, x - 50, y + 50, 100)
+            time.sleep(.05)
+            lock.release()
 
-
-def draw_circles(tur):
+def draw_circles(tur, lock):
     """Draw a group of circles"""
     for x in range(-300, 350, 200):
         for y in range(-300, 350, 200):
+            lock.acquire()
             draw_circle(tur, x, y-2, 50)
+            time.sleep(.05)
+            lock.release()
 
 
-def draw_triangles(tur):
+def draw_triangles(tur, lock):
     """Draw a group of triangles"""
     for x in range(-300, 350, 200):
         for y in range(-300, 350, 200):
+            lock.acquire()
             draw_triangle(tur, x-30, y-30+10, 60)
+            time.sleep(.05)
+            lock.release()
 
 
-def draw_rectangles(tur):
+def draw_rectangles(tur, lock):
     """Draw a group of Rectangles"""
     for x in range(-300, 350, 200):
         for y in range(-300, 350, 200):
+            lock.acquire()
             draw_rectangle(tur, x-10, y+5, 20, 15)
+            time.sleep(.05)
+            lock.release()
+            
+
 
 
 def run_no_threads(tur, log, main_turtle):
@@ -159,7 +173,7 @@ def run_no_threads(tur, log, main_turtle):
 
 def run_with_threads(tur, log, main_turtle):
     """Draw different shapes using threads"""
-
+    lock = threading.Lock()
     # Draw Coors system
     tur.pensize(0.5)
     draw_coord_system(tur, 0, 0, size=375)
@@ -171,6 +185,40 @@ def run_with_threads(tur, log, main_turtle):
     # TODO - Start add your code here.
     # You need to use 4 threads where each thread concurrently drawing one type of shape.
     # You are free to change any functions in this code except main()
+
+    threads = []
+
+
+
+    squs = threading.Thread(target= draw_squares, args= (tur,lock))
+    cirs = threading.Thread(target= draw_circles, args= (tur, lock))
+    tris = threading.Thread(target= draw_triangles, args= (tur, lock))
+    rects = threading.Thread(target= draw_rectangles, args= (tur, lock))
+
+    threads.append(squs)
+    threads.append(cirs)
+    threads.append(tris)
+    threads.append(rects)
+
+    
+
+    for t in threads:
+        t.start()
+        
+
+    for t in threads:
+        t.join()
+    
+    """ squs.start()
+    cirs.start()
+    tris.start()
+    rects.start()
+
+    squs.join()
+    cirs.join()
+    tris.join()
+    rects.join() """
+    
 
     log.step_timer('All drawing commands have been created')
 
