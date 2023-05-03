@@ -118,8 +118,8 @@ def run():
     master_dict = json.loads(data)
 
     # testing
-    # print(type(master_dict['people1']))
-    # print(master_dict['films6'])
+    #print(type(master_dict['people1']))
+    print(master_dict['films6'])
 
     print(f'Star Wars server waiting..... \nURL: {TOP_API_URL}')
 

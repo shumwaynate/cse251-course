@@ -26,8 +26,21 @@ from cse251 import *
 
 class Request_thread(threading.Thread):
     # TODO - Add code to make an API call and return the results
-    # https://realpython.com/python-requests/
-    pass
+    #response = requests.get('https://realpython.com/python-requests/')
+    def __init__(self, url):
+        super().__init__()
+
+        self.url = url
+        self.response = {}
+
+    def run(self):
+        theReturn = requests.get(self.url)
+        if theReturn.status_code == 200:
+            self.response = theReturn.json()
+        else:
+            print('RESPONSE = ', theReturn.status_code)
+
+
 
 class Deck:
 
@@ -40,11 +53,22 @@ class Deck:
     def reshuffle(self):
         print('Reshuffle Deck')
         # TODO - add call to reshuffle
+        reshuff = Request_thread(rf'https://deckofcardsapi.com/api/deck/{self.id}/shuffle/')
+        reshuff.start()
+        reshuff.join()
+
 
 
     def draw_card(self):
         # TODO add call to get a card
-        pass
+        indCard = Request_thread(rf'https://deckofcardsapi.com/api/deck/{self.id}/draw/?count=2')
+        indCard.start()
+        indCard.join()
+        if indCard.response != {}:
+            self.remaining = indCard.response['remaining']
+            return indCard.response['cards'][0]['code']
+        else:
+            return ''
 
     def cards_remaining(self):
         return self.remaining
@@ -63,7 +87,7 @@ if __name__ == '__main__':
     #        team_get_deck_id.py program once. You can have
     #        multiple decks if you need them
 
-    deck_id = 'ENTER ID HERE'
+    deck_id = 'p3e3muuqzbpi'
 
     # Testing Code >>>>>
     deck = Deck(deck_id)

@@ -146,9 +146,10 @@ class Board():
         print(f'Finding {word}...')
         for row in range(self.size):
             for col in range(self.size):
-                for d in range(0, 8):
-                    if self._word_at_this_location(row, col, d, word):
-                        return True
+                if word[0] == self.board[row][col]:
+                    for d in range(0, 8):
+                        if self._word_at_this_location(row, col, d, word):
+                            return True
         return False
 
 
@@ -162,9 +163,27 @@ def main():
     board.display()
 
     start = time.perf_counter()
-    for word in words:
-        if not board.find_word(word):
-            print(f'Error: Could not find "{word}"')
+
+
+    # for word in words:
+    #     if not board.find_word(word):
+    #         print(f'Error: Could not find "{word}"')
+
+    # findThreads=[]
+    # for word in words:
+    #     findItThread = threading.Thread(target=board.find_word, args=(word,))
+    #     findThreads.append(findItThread)
+        
+    # for i in findThreads:
+    #     i.start()
+
+    # for i in findThreads:
+    #     i.join()
+    
+    # for word in words:
+    #     for i in findThreads:
+    #         if not i:
+    #             print(f'Error: Could not find "{word}"')
     
     total_time = time.perf_counter() - start
 
