@@ -165,9 +165,9 @@ def main():
     start = time.perf_counter()
 
 
-    # for word in words:
-    #     if not board.find_word(word):
-    #         print(f'Error: Could not find "{word}"')
+    for word in words:
+        if not board.find_word(word):
+            print(f'Error: Could not find "{word}"')
 
     # findThreads=[]
     # for word in words:
