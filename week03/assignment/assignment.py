@@ -62,7 +62,11 @@ def create_new_frame(image_file, green_file, process_file):
 
 # TODO add any functions to need here
 
-
+def process_frame(image_number):
+    image_file = rf'elephant/image{image_number:03d}.png'
+    green_file = rf'green/image{image_number:03d}.png'
+    process_file = rf'processed/image{image_number:03d}.png'
+    create_new_frame(image_file, green_file, process_file)
 
 if __name__ == '__main__':
     # single_file_processing(300)
@@ -76,24 +80,29 @@ if __name__ == '__main__':
 
     # TODO Process all frames trying 1 cpu, then 2, then 3, ... to CPU_COUNT
     #      add results to xaxis_cpus and yaxis_times
+    for cpu in range(1, CPU_COUNT +1):
+        start_time = timeit.default_timer()
+        with mp.Pool(cpu) as p:
+          p.map(process_frame, list(range(1,301)))
+        print(f'\nTime To Process all images = {timeit.default_timer() - start_time}')
+        log.write(f'Total Time for ALL processing: {timeit.default_timer() - all_process_time}')
 
 
     # sample code: remove before submitting  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     # process one frame #10
-    image_number = 10
+    # image_number = 10
 
-    image_file = rf'elephant/image{image_number:03d}.png'
-    green_file = rf'green/image{image_number:03d}.png'
-    process_file = rf'processed/image{image_number:03d}.png'
+    # image_file = rf'elephant/image{image_number:03d}.png'
+    # green_file = rf'green/image{image_number:03d}.png'
+    # process_file = rf'processed/image{image_number:03d}.png'
 
-    start_time = timeit.default_timer()
-    create_new_frame(image_file, green_file, process_file)
-    print(f'\nTime To Process all images = {timeit.default_timer() - start_time}')
+    # start_time = timeit.default_timer()
+    # create_new_frame(image_file, green_file, process_file)
+    # print(f'\nTime To Process all images = {timeit.default_timer() - start_time}')
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
-    log.write(f'Total Time for ALL processing: {timeit.default_timer() - all_process_time}')
-
+    
     # create plot of results and also save it to a PNG file
     plt.plot(xaxis_cpus, yaxis_times, label=f'{FRAME_COUNT}')
     
